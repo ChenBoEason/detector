@@ -3,7 +3,6 @@ package com.cbmiddleware.detector.detector;
 import com.alibaba.fastjson.JSON;
 import com.cbmiddleware.detector.exception.DetectorException;
 import com.cbmiddleware.detector.mysql.MysqlSqlGenerator;
-import com.bqmiddleware.detector.sql.*;
 import com.cbmiddleware.detector.sql.constant.ColumnRelation;
 import com.cbmiddleware.detector.sql.constant.ConditionType;
 import com.cbmiddleware.detector.sql.constant.TableRelation;

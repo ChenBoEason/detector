@@ -1,7 +1,6 @@
 package com.cbmiddleware.detector.detector;
 
 import com.alibaba.fastjson.JSON;
-import com.bqmiddleware.detector.*;
 import com.cbmiddleware.detector.entity.Threshold;
 import com.cbmiddleware.detector.exception.DetectorException;
 import com.cbmiddleware.detector.*;
