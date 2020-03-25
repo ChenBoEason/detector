@@ -8,7 +8,6 @@ import com.cbmiddleware.detector.sql.constant.ColumnRelation;
 import com.cbmiddleware.detector.sql.constant.ConditionType;
 import com.cbmiddleware.detector.sql.constant.TableRelation;
 import com.cbmiddleware.detector.sql.function.*;
-import com.cbmiddleware.detector.sql.function.*;
 import com.cbmiddleware.detector.util.DataSourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +23,7 @@ import java.util.List;
  **/
 public abstract class AbstractSqlGenerator implements SqlGenerator {
 
+
     private static final Logger logger = LoggerFactory.getLogger(AbstractSqlGenerator.class);
 
     @Override
@@ -35,35 +35,70 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
 
         QueryTable queryTable = sqlConfInfo.getQueryTable();
 
+        /* 基表若有条件，取出来放到where条件中 */
+        ConditionInfo conditionInfo = queryTable.getConditionInfo();
+        queryTable.setConditionInfo(null);
+
 
         List<String> tableSentences = new ArrayList<>();
         /* 翻译表语句 */
         translateTable(queryTable, tableSentences);
 
         /* 构建sql语句 */
-        StringBuilder sql = new StringBuilder("SELECT\n");
+        StringBuilder sql = new StringBuilder("SELECT \n");
 
         for (int i = 0; i < columnSentences.size() - 1; i++) {
-            sql.append(columnSentences.get(i)).append(",\n");
+            sql.append(columnSentences.get(i)).append(", \n");
         }
 
-        sql.append(columnSentences.get(columnSentences.size() - 1)).append("\nFROM\n");
+        sql.append(columnSentences.get(columnSentences.size() - 1)).append(" \nFROM \n");
 
         for (int i = 0; i < tableSentences.size() - 1; i++) {
-            sql.append(tableSentences.get(i)).append("\n");
+            sql.append(tableSentences.get(i)).append(" \n");
         }
         sql.append(tableSentences.get(tableSentences.size() - 1));
 
-        StringBuilder builder = new StringBuilder();
-        translateCondition(queryTable.getTableAlias(), sqlConfInfo.getWhere(), builder);
+        /* where条件 */
+        ConditionInfo where = sqlConfInfo.getWhere();
 
-        if (!StringUtils.isEmpty(builder.toString())) {
-            sql.append("\nWHERE ").append(builder.toString());
+        if (conditionInfo != null) {
+            if (where == null) {
+                /* 第一个条件不需要加任何关系 */
+                conditionInfo.setColumnRelation(null);
+                where = conditionInfo;
+            } else {
+                appendWhere(where, conditionInfo, 0, 50);
+            }
+        }
+
+
+        if (where != null) {
+            StringBuilder builder = new StringBuilder();
+            translateCondition(queryTable.getTableAlias(), where, builder);
+            if (!StringUtils.isEmpty(builder.toString())) {
+                sql.append(" \nWHERE ").append(builder.toString());
+            }
         }
 
         sql.append(";");
         logger.info("sql info\n{}", sql.toString());
         return sql.toString();
+    }
+
+    private static void appendWhere(ConditionInfo where, ConditionInfo conditionInfo, long dfsCount, final long expectCount) throws DetectorException{
+
+        if (++dfsCount >= expectCount) {
+            throw new DetectorException(String.format("self invocation more than %s", expectCount));
+        }
+
+        /* 当下一个条件为空时将该条件加入进去 */
+        if (where.getConditionInfo() == null) {
+
+            where.setConditionInfo(conditionInfo);
+            return;
+        }
+
+        appendWhere(where.getConditionInfo(), conditionInfo, dfsCount, expectCount);
     }
 
 
@@ -238,9 +273,7 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
     @Override
     public void join(ExtraCondition extraCondition, QueryTable queryTable, long dfsCount, final long expectCount) throws DetectorException {
 
-        dfsCount++;
-
-        if (dfsCount >= expectCount) {
+        if (++dfsCount >= expectCount) {
             throw new DetectorException(String.format("self invocation more than %s", expectCount));
         }
 
@@ -254,6 +287,14 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
         /* 表相等追加到条件后面 */
         if (com.alibaba.druid.util.StringUtils.equals(tableName, queryTableTableName)) {
             ConditionInfo conditionInfo = queryTable.getConditionInfo();
+
+            if (conditionInfo == null) {
+                queryTable.setConditionInfo(new ConditionInfo(extraCondition.getColumnName(), extraCondition.getConditionType(),
+                        extraCondition.getValue(), extraCondition.getRelation()));
+
+                return;
+            }
+
             mergeCondition(extraCondition, conditionInfo, 0, expectCount);
             return;
         }
@@ -273,20 +314,19 @@ public abstract class AbstractSqlGenerator implements SqlGenerator {
 
     private static void mergeCondition(ExtraCondition extraCondition, ConditionInfo conditionInfo, long dfsCount, final long expectCount) throws DetectorException {
 
-        dfsCount++;
-
-        if (dfsCount >= expectCount) {
+        if (++dfsCount >= expectCount) {
             throw new DetectorException(String.format("self invocation more than %s", expectCount));
         }
 
         /* 当下一个条件为空时将该条件加入进去 */
         if (conditionInfo.getConditionInfo() == null) {
 
-            conditionInfo.setConditionInfo(new ConditionInfo(extraCondition.getColumnName(), extraCondition.getConditionType(), extraCondition.getValue(), extraCondition.getRelation()));
+            conditionInfo.setConditionInfo(new ConditionInfo(extraCondition.getColumnName(),
+                    extraCondition.getConditionType(), extraCondition.getValue(), extraCondition.getRelation()));
             return;
         }
 
-        mergeCondition(extraCondition, conditionInfo, dfsCount, expectCount);
+        mergeCondition(extraCondition, conditionInfo.getConditionInfo(), dfsCount, expectCount);
     }
 
 

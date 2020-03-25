@@ -16,6 +16,10 @@ public class ExtraCondition {
      */
     private String tableName;
     /**
+     * 表别名
+     */
+    private String tableAlias;
+    /**
      * 字段
      */
     private String columnName;
@@ -89,5 +93,13 @@ public class ExtraCondition {
 
     public void setRelation(ColumnRelation relation) {
         this.relation = relation;
+    }
+
+    public String getTableAlias() {
+        return tableAlias;
+    }
+
+    public void setTableAlias(String tableAlias) {
+        this.tableAlias = tableAlias;
     }
 }
