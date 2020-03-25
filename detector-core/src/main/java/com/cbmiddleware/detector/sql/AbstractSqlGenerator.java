@@ -7,7 +7,7 @@ import com.cbmiddleware.detector.constant.FunctionType;
 import com.cbmiddleware.detector.sql.constant.ColumnRelation;
 import com.cbmiddleware.detector.sql.constant.ConditionType;
 import com.cbmiddleware.detector.sql.constant.TableRelation;
-import com.bqmiddleware.detector.sql.function.*;
+import com.cbmiddleware.detector.sql.function.*;
 import com.cbmiddleware.detector.sql.function.*;
 import com.cbmiddleware.detector.util.DataSourceUtils;
 import org.slf4j.Logger;

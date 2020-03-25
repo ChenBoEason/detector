@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.bqmiddleware.detector</groupId>
+    <groupId>com.cbmiddleware.detector</groupId>
     <artifactId>detector-oracle</artifactId>
     <version>1.0.4</version>
 
@@ -27,7 +27,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.bqmiddleware.detector</groupId>
+            <groupId>com.cbmiddleware.detector</groupId>
             <artifactId>detector-core</artifactId>
             <version>1.0.4</version>
         </dependency>

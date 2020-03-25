@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.bqmiddleware.detector.elasticsearch</groupId>
+    <groupId>com.cbmiddleware.detector.elasticsearch</groupId>
     <artifactId>detector-elasticsearch</artifactId>
     <version>0.0.1</version>
 
@@ -21,7 +21,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.bqmiddleware.detector</groupId>
+            <groupId>com.cbmiddleware.detector</groupId>
             <artifactId>detector-core</artifactId>
             <version>1.0.4</version>
         </dependency>

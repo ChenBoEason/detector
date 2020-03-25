@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>detector</artifactId>
-        <groupId>com.bqmiddleware.detector</groupId>
+        <groupId>com.cbmiddleware.detector</groupId>
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.bqmiddleware.detector</groupId>
+    <groupId>com.cbmiddleware.detector</groupId>
     <artifactId>detector-all</artifactId>
     <version>1.0.4</version>
 
@@ -23,19 +23,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.bqmiddleware.detector</groupId>
+            <groupId>com.cbmiddleware.detector</groupId>
             <artifactId>detector-mysql</artifactId>
             <version>1.0.4</version>
         </dependency>
 
         <dependency>
-            <groupId>com.bqmiddleware.detector</groupId>
+            <groupId>com.cbmiddleware.detector</groupId>
             <artifactId>detector-core</artifactId>
             <version>1.0.4</version>
         </dependency>
 
         <dependency>
-            <groupId>com.bqmiddleware.detector</groupId>
+            <groupId>com.cbmiddleware.detector</groupId>
             <artifactId>detector-oracle</artifactId>
             <version>1.0.4</version>
         </dependency>
@@ -53,7 +53,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.bqmiddleware.detector</groupId>
+            <groupId>com.cbmiddleware.detector</groupId>
             <artifactId>detector-odps</artifactId>
             <version>1.0.4</version>
         </dependency>
