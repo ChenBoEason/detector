@@ -6,10 +6,27 @@ import com.cbmiddleware.detector.DetectResponse;
 import com.cbmiddleware.detector.DetectorActionListener;
 import com.cbmiddleware.detector.constant.DataBaseType;
 import com.cbmiddleware.detector.constant.DetectorType;
+import com.cbmiddleware.detector.elasticsearch.common.utils.ElasticSearchUtils;
+import com.cbmiddleware.detector.elasticsearch.common.version.ElasticSearchVersion;
+import com.cbmiddleware.detector.entity.ColumnInfo;
+import com.cbmiddleware.detector.entity.TableInfo;
 import com.cbmiddleware.detector.entity.Threshold;
 import com.cbmiddleware.detector.exception.DetectorException;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.client.indices.GetMappingsRequest;
+import org.elasticsearch.client.indices.GetMappingsResponse;
+import org.elasticsearch.cluster.metadata.MappingMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.cbmiddleware.detector.elasticsearch.common.constant.ElasticSearchCoreConstants.*;
 
 /**
  * @author Eason(bo.chenb)
@@ -18,9 +35,61 @@ import java.util.List;
  **/
 public class ElasticsearchTableDetector extends AbstractTableDetector {
 
+    private static final Logger log = LoggerFactory.getLogger(ElasticsearchTableDetector.class);
+
     @Override
     public DetectResponse detect(DetectRequest detectRequest) throws DetectorException {
-        return super.detect(detectRequest);
+        ElasticsearchDetectRequest request = (ElasticsearchDetectRequest) detectRequest;
+
+        log.info("Begin get elasticsearch index info...");
+        long startTableInfoTime = System.currentTimeMillis();
+
+        try (RestHighLevelClient esClient = ElasticSearchUtils.getEsClient(
+                request.getAddress(),
+                request.getScheme(),
+                request.getUsername(),
+                request.getUsername())
+        ) {
+            GetMappingsRequest getMappingsRequest = new GetMappingsRequest();
+            //  如果传了 tableNames 也就是索引名称 则进行单独查询
+            if (request.getTableNames() != null && !request.getTableNames().isEmpty()) {
+                //指定索引
+                getMappingsRequest.indices(request.getTableNames().toArray(new String[0]));
+            }
+            //调用获取
+            GetMappingsResponse getMappingResponse = esClient.indices().getMapping(getMappingsRequest, RequestOptions.DEFAULT);
+            //处理数据
+            Map<String, MappingMetadata> mappings = getMappingResponse.mappings();
+
+            Map<String, TableInfo> tableInfoMap = new HashMap<>();
+            mappings.forEach((indexName, indexInfo) -> {
+                TableInfo tableInfo = new TableInfo();
+                tableInfoMap.put(indexName, tableInfo);
+                Map<String, Object> sourceAsMap = indexInfo.getSourceAsMap();
+                // 过滤调mapping为空的表
+                List<ColumnInfo> columnInfos = new ArrayList<>();
+                if(null != sourceAsMap && sourceAsMap.containsKey(PROPERTIES)) {
+                    Map<String, Object> properties = (Map<String, Object>) sourceAsMap.get(PROPERTIES);
+                    properties.forEach((fieldName, fieldValue) -> {
+                        Map<String, Object> value = (Map<String, Object>) fieldValue;
+                        ColumnInfo columnInfo = new ColumnInfo();
+                        columnInfo.setTableName(indexName);
+                        columnInfo.setColumnName(fieldName);
+                        columnInfo.setColumnType((String)value.get(TYPE));
+                        columnInfo.setDataType((String)value.get(TYPE));
+                        columnInfos.add(columnInfo);
+                    });
+                }
+                tableInfo.setFieldInfos(columnInfos);
+            });
+            ElasticsearchDetectResponse response = new ElasticsearchDetectResponse();
+            response.setTableInfos(tableInfoMap);
+            log.info("End get elasticsearch index info..., It takes time:{}", System.currentTimeMillis() - startTableInfoTime);
+            return response;
+        } catch (Exception e) {
+            log.error("className: ElasticsearchTableDetector, methodName:detect, error:", e);
+            throw new DetectorException("探测出现异常", e);
+        }
     }
 
     @Override
@@ -35,7 +104,33 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
 
     @Override
     public boolean isConnect(DetectRequest detectRequest) throws DetectorException {
-        return super.isConnect(detectRequest);
+
+        ElasticsearchDetectRequest elasticsearchDetectRequest = (ElasticsearchDetectRequest) detectRequest;
+
+
+        try (RestHighLevelClient esClient = ElasticSearchUtils.getEsClient(
+                elasticsearchDetectRequest.getAddress(),
+                elasticsearchDetectRequest.getScheme(),
+                elasticsearchDetectRequest.getUsername(),
+                elasticsearchDetectRequest.getUsername())
+        ) {
+            String version = elasticsearchDetectRequest.getVersion();
+            ElasticSearchVersion searchVersion = ElasticSearchVersion.parse(version);
+            switch (searchVersion) {
+                case VERSION_5:
+                case VERSION_6:
+                    // todo
+                    return false;
+                case VERSION_7:
+                    return esClient.indices().exists(new GetIndexRequest(elasticsearchDetectRequest.getIndexName()), RequestOptions.DEFAULT);
+                default:
+                    throw new RuntimeException("无效的es版本");
+            }
+
+        } catch (Exception e) {
+            log.error("className: ElasticsearchTableDetector, methodName:isConnect, error:", e);
+            throw new RuntimeException("el isConnect error", e);
+        }
     }
 
     @Override
