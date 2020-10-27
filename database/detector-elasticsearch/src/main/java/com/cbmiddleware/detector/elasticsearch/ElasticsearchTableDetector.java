@@ -21,10 +21,7 @@ import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.cbmiddleware.detector.elasticsearch.common.constant.ElasticSearchCoreConstants.*;
 
@@ -116,13 +113,14 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
         ) {
             String version = elasticsearchDetectRequest.getVersion();
             ElasticSearchVersion searchVersion = ElasticSearchVersion.parse(version);
+            String indexName = "detect_test_connect_"+ UUID.randomUUID().toString().replace("-", "");
             switch (searchVersion) {
                 case VERSION_5:
                 case VERSION_6:
                     // todo
                     return false;
                 case VERSION_7:
-                    return esClient.indices().exists(new GetIndexRequest(elasticsearchDetectRequest.getIndexName()), RequestOptions.DEFAULT);
+                    return esClient.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT);
                 default:
                     throw new RuntimeException("无效的es版本");
             }
