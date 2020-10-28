@@ -146,11 +146,11 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
 
     @Override
     public DetectorType detectorType() {
-        return null;
+        return DetectorType.table;
     }
 
     @Override
     public DataBaseType databaseType() {
-        return null;
+        return DataBaseType.elasticsearch;
     }
 }

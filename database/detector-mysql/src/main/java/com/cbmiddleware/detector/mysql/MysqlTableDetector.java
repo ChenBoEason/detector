@@ -86,6 +86,15 @@ public class MysqlTableDetector extends AbstractTableDetector {
             logger.error("Get mysql table information error, sql :[{}]", tableSql, e);
             throw new DetectorException(String.format("Get mysql table information error, sql:[%s]", tableSql), e);
         }
+
+        // 提前返回
+        if (null == tableInfos || tableInfos.size() <= 0){
+            logger.info("Get mysql table info completed, table size:[{}], time consume:[{}ms]", 0, System.currentTimeMillis() - startTableInfoTime);
+            MysqlDetectResponse response = new MysqlDetectResponse();
+            response.setTableInfos(new HashMap<>());
+            return response;
+        }
+
         logger.info("Get mysql table info completed, table size:[{}], time consume:[{}ms]", tableInfos.size(), System.currentTimeMillis() - startTableInfoTime);
 
         List<String> tableNames = new ArrayList<>(tableInfos.size());
@@ -101,7 +110,7 @@ public class MysqlTableDetector extends AbstractTableDetector {
          * 获取表中字段信息
          */
         String fieldSql = String.format(MysqlSystemStatement.TABLE_INFO, builder.substring(0, builder.length() - 1).toUpperCase());
-        Map<String, List<ColumnInfo>> mysqlFieldInfo = new HashMap<>();
+        Map<String, List<ColumnInfo>> mysqlFieldInfo = null;
 
         logger.info("Begin get mysql table field info...");
         long startTableFieldInfoTime = System.currentTimeMillis();

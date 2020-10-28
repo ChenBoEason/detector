@@ -14,7 +14,7 @@ public class MysqlSystemStatement {
     /**
      * 查询表中字段信息
      */
-    public static final String TABLE_INFO = "select * from information_schema.columns where table_name in (%s)";
+    public static final String TABLE_INFO = "select * from information_schema.columns where table_name in (%s) and table_schema = '%s'";
 
     /**
      * mysql 查询项目下所有表信息

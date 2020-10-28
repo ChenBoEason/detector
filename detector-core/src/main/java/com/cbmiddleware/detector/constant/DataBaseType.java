@@ -6,17 +6,18 @@ package com.cbmiddleware.detector.constant;
  * @date 2020-03-05
  **/
 public enum DataBaseType {
-
+    /**/
 
     oracle,
     mysql,
     odps,
+    elasticsearch,
     ;
 
-    public static DataBaseType parse(String type){
+    public static DataBaseType parse(String type) {
 
-        for (DataBaseType dataSourceType : DataBaseType.values()){
-            if(dataSourceType.name().equalsIgnoreCase(type)){
+        for (DataBaseType dataSourceType : DataBaseType.values()) {
+            if (dataSourceType.name().equalsIgnoreCase(type)) {
                 return dataSourceType;
             }
         }
