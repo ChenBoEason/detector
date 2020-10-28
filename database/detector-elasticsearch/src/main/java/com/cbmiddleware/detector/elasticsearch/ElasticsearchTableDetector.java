@@ -67,6 +67,7 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
                 List<ColumnInfo> columnInfos = new ArrayList<>();
                 if(null != sourceAsMap && sourceAsMap.containsKey(PROPERTIES)) {
                     Map<String, Object> properties = (Map<String, Object>) sourceAsMap.get(PROPERTIES);
+                    final Integer[] positionIndex = {1};
                     properties.forEach((fieldName, fieldValue) -> {
                         Map<String, Object> value = (Map<String, Object>) fieldValue;
                         ColumnInfo columnInfo = new ColumnInfo();
@@ -74,6 +75,7 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
                         columnInfo.setColumnName(fieldName);
                         columnInfo.setColumnType((String)value.get(TYPE));
                         columnInfo.setDataType((String)value.get(TYPE));
+                        columnInfo.setOrdinalPosition(positionIndex[0]++);
                         columnInfos.add(columnInfo);
                     });
                 }
@@ -109,7 +111,7 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
                 elasticsearchDetectRequest.getAddress(),
                 elasticsearchDetectRequest.getScheme(),
                 elasticsearchDetectRequest.getUsername(),
-                elasticsearchDetectRequest.getUsername())
+                elasticsearchDetectRequest.getPassword())
         ) {
             String version = elasticsearchDetectRequest.getVersion();
             ElasticSearchVersion searchVersion = ElasticSearchVersion.parse(version);
@@ -120,7 +122,8 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
                     // todo
                     return false;
                 case VERSION_7:
-                    return esClient.indices().exists(new GetIndexRequest(indexName), RequestOptions.DEFAULT);
+                    //对远程Elasticsearch集群执行ping操作，如果ping成功，则返回true，否则返回false
+                    return esClient.ping(RequestOptions.DEFAULT);
                 default:
                     throw new RuntimeException("无效的es版本");
             }
