@@ -45,7 +45,7 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
                 request.getAddress(),
                 request.getScheme(),
                 request.getUsername(),
-                request.getUsername())
+                request.getPassword())
         ) {
             GetMappingsRequest getMappingsRequest = new GetMappingsRequest();
             //  如果传了 tableNames 也就是索引名称 则进行单独查询
