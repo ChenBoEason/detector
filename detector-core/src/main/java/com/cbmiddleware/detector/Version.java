@@ -9,8 +9,10 @@ import com.cbmiddleware.detector.constant.DetectorType;
  **/
 public interface Version {
 
-
-
+    /**
+     * 数据源版本号
+     * @return
+     */
     String version();
 
     DetectorType type();

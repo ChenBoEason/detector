@@ -21,6 +21,7 @@ import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.cbmiddleware.detector.elasticsearch.common.constant.ElasticSearchCoreConstants.*;
@@ -38,21 +39,23 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
     public DetectResponse detect(DetectRequest detectRequest) throws DetectorException {
         ElasticsearchDetectRequest request = (ElasticsearchDetectRequest) detectRequest;
 
-        log.info("Begin get elasticsearch index info...");
-        long startTableInfoTime = System.currentTimeMillis();
+        String address = request.getAddress();
+        String scheme = request.getScheme();
+        String username = request.getUsername();
+        String password = request.getPassword();
 
-        try (RestHighLevelClient esClient = ElasticSearchUtils.getEsClient(
-                request.getAddress(),
-                request.getScheme(),
-                request.getUsername(),
-                request.getPassword())
-        ) {
+        log.info("Begin get elasticsearch index info,address:[{}], ...");
+        long startTableInfoTime = System.currentTimeMillis();
+        RestHighLevelClient esClient = null;
+        try {
+
             GetMappingsRequest getMappingsRequest = new GetMappingsRequest();
             //  如果传了 tableNames 也就是索引名称 则进行单独查询
             if (request.getTableNames() != null && !request.getTableNames().isEmpty()) {
                 //指定索引
                 getMappingsRequest.indices(request.getTableNames().toArray(new String[0]));
             }
+            esClient = ElasticSearchUtils.getEsClient(address, scheme, username, password);
             //调用获取
             GetMappingsResponse getMappingResponse = esClient.indices().getMapping(getMappingsRequest, RequestOptions.DEFAULT);
             //处理数据
@@ -65,7 +68,7 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
                 Map<String, Object> sourceAsMap = indexInfo.getSourceAsMap();
                 // 过滤调mapping为空的表
                 List<ColumnInfo> columnInfos = new ArrayList<>();
-                if(null != sourceAsMap && sourceAsMap.containsKey(PROPERTIES)) {
+                if (null != sourceAsMap && sourceAsMap.containsKey(PROPERTIES)) {
                     Map<String, Object> properties = (Map<String, Object>) sourceAsMap.get(PROPERTIES);
                     final Integer[] positionIndex = {1};
                     properties.forEach((fieldName, fieldValue) -> {
@@ -73,8 +76,8 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
                         ColumnInfo columnInfo = new ColumnInfo();
                         columnInfo.setTableName(indexName);
                         columnInfo.setColumnName(fieldName);
-                        columnInfo.setColumnType((String)value.get(TYPE));
-                        columnInfo.setDataType((String)value.get(TYPE));
+                        columnInfo.setColumnType((String) value.get(TYPE));
+                        columnInfo.setDataType((String) value.get(TYPE));
                         columnInfo.setOrdinalPosition(positionIndex[0]++);
                         columnInfos.add(columnInfo);
                     });
@@ -88,6 +91,14 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
         } catch (Exception e) {
             log.error("className: ElasticsearchTableDetector, methodName:detect, error:", e);
             throw new DetectorException("探测出现异常", e);
+        } finally {
+            if (esClient != null) {
+                try {
+                    esClient.close();
+                } catch (IOException e) {
+
+                }
+            }
         }
     }
 
@@ -115,7 +126,7 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
         ) {
             String version = elasticsearchDetectRequest.getVersion();
             ElasticSearchVersion searchVersion = ElasticSearchVersion.parse(version);
-            String indexName = "detect_test_connect_"+ UUID.randomUUID().toString().replace("-", "");
+            String indexName = "detect_test_connect_" + UUID.randomUUID().toString().replace("-", "");
             switch (searchVersion) {
                 case VERSION_5:
                 case VERSION_6:
