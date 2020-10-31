@@ -115,18 +115,17 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
     @Override
     public boolean isConnect(DetectRequest detectRequest) throws DetectorException {
 
-        ElasticsearchDetectRequest elasticsearchDetectRequest = (ElasticsearchDetectRequest) detectRequest;
+        ElasticsearchDetectRequest request = (ElasticsearchDetectRequest) detectRequest;
 
-
-        try (RestHighLevelClient esClient = ElasticSearchUtils.getEsClient(
-                elasticsearchDetectRequest.getAddress(),
-                elasticsearchDetectRequest.getScheme(),
-                elasticsearchDetectRequest.getUsername(),
-                elasticsearchDetectRequest.getPassword())
-        ) {
-            String version = elasticsearchDetectRequest.getVersion();
+        String address = request.getAddress();
+        String scheme = request.getScheme();
+        String username = request.getUsername();
+        String password = request.getPassword();
+        RestHighLevelClient esClient = null;
+        try {
+            esClient = ElasticSearchUtils.getEsClient(address, scheme, username, password);
+            String version = request.getVersion();
             ElasticSearchVersion searchVersion = ElasticSearchVersion.parse(version);
-            String indexName = "detect_test_connect_" + UUID.randomUUID().toString().replace("-", "");
             switch (searchVersion) {
                 case VERSION_5:
                 case VERSION_6:
@@ -142,6 +141,14 @@ public class ElasticsearchTableDetector extends AbstractTableDetector {
         } catch (Exception e) {
             log.error("className: ElasticsearchTableDetector, methodName:isConnect, error:", e);
             throw new RuntimeException("el isConnect error", e);
+        } finally {
+            if (esClient != null) {
+                try {
+                    esClient.close();
+                } catch (IOException e) {
+
+                }
+            }
         }
     }
 
