@@ -1,9 +1,9 @@
-package com.cbmiddleware.detector.dialect;
+package com.cbmiddleware.detector.ddl;
 
-import com.cbmiddleware.detector.dialect.model.ColumnModel;
-import com.cbmiddleware.detector.dialect.model.IndexModel;
-import com.cbmiddleware.detector.dialect.model.PrimaryKeyModel;
-import com.cbmiddleware.detector.dialect.model.TableModel;
+import com.cbmiddleware.detector.ddl.model.ColumnModel;
+import com.cbmiddleware.detector.ddl.model.IndexModel;
+import com.cbmiddleware.detector.ddl.model.PrimaryKeyModel;
+import com.cbmiddleware.detector.ddl.model.TableModel;
 import org.jetbrains.annotations.NotNull;
 
 /**
