@@ -1,4 +1,4 @@
-package com.cbmiddleware.detector.ddl.model;
+package com.cbmiddleware.detector.database.model;
 
 import com.bqmiddleware.detector.dialect.rules.Type;
 import org.apache.commons.lang3.StringUtils;

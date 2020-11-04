@@ -1,4 +1,4 @@
-package com.cbmiddleware.detector.ddl.model;
+package com.cbmiddleware.detector.database.model;
 
 import com.alibaba.druid.util.StringUtils;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.cbmiddleware.detector.ddl.model;
+package com.cbmiddleware.detector.database.model;
 
 import com.bqmiddleware.detector.dialect.rules.IndexType;
 
