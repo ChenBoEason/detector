@@ -1,4 +1,4 @@
-package com.cbmiddleware.detector.database;
+package com.cbmiddleware.detector.sql;
 
 
 /*

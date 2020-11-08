@@ -2,8 +2,8 @@ package com.cbmiddleware.detector.mysql;
 
 import com.cbmiddleware.detector.constant.DataBaseType;
 import com.cbmiddleware.detector.exception.DetectorException;
-import com.cbmiddleware.detector.sql.AbstractSqlGenerator;
-import com.cbmiddleware.detector.sql.GenerateSqlConfInfo;
+import com.cbmiddleware.detector.sql.multiple.AbstractSqlGenerator;
+import com.cbmiddleware.detector.sql.multiple.GenerateSqlConfInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

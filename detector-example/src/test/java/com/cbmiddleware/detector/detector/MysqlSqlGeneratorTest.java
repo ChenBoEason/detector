@@ -7,7 +7,7 @@ import com.cbmiddleware.detector.sql.constant.ColumnRelation;
 import com.cbmiddleware.detector.sql.constant.ConditionType;
 import com.cbmiddleware.detector.sql.constant.TableRelation;
 import com.cbmiddleware.detector.sql.function.ColumnCaseWhen;
-import com.cbmiddleware.detector.sql.*;
+import com.cbmiddleware.detector.sql.multiple.*;
 import org.junit.Test;
 
 import java.util.*;

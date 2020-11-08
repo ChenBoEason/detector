@@ -1,9 +1,9 @@
-package com.cbmiddleware.detector.database;
+package com.cbmiddleware.detector.sql.ddl;
 
-import com.cbmiddleware.detector.database.model.ColumnModel;
-import com.cbmiddleware.detector.database.model.IndexModel;
-import com.cbmiddleware.detector.database.model.PrimaryKeyModel;
-import com.cbmiddleware.detector.database.model.TableModel;
+import com.cbmiddleware.detector.model.ColumnModel;
+import com.cbmiddleware.detector.model.IndexModel;
+import com.cbmiddleware.detector.model.PrimaryKeyModel;
+import com.cbmiddleware.detector.model.TableModel;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,4 +1,4 @@
-package com.cbmiddleware.detector.sql;
+package com.cbmiddleware.detector.sql.multiple;
 
 import com.cbmiddleware.detector.exception.DetectorException;
 

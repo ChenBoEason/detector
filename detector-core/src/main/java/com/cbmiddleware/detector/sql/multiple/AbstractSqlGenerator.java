@@ -1,4 +1,4 @@
-package com.cbmiddleware.detector.sql;
+package com.cbmiddleware.detector.sql.multiple;
 
 import com.alibaba.fastjson.JSON;
 import com.cbmiddleware.detector.constant.DataBaseType;

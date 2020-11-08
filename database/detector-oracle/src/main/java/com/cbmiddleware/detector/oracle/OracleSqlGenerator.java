@@ -2,8 +2,8 @@ package com.cbmiddleware.detector.oracle;
 
 import com.cbmiddleware.detector.constant.DataBaseType;
 import com.cbmiddleware.detector.exception.DetectorException;
-import com.cbmiddleware.detector.sql.AbstractSqlGenerator;
-import com.cbmiddleware.detector.sql.GenerateSqlConfInfo;
+import com.cbmiddleware.detector.sql.multiple.AbstractSqlGenerator;
+import com.cbmiddleware.detector.sql.multiple.GenerateSqlConfInfo;
 
 /**
  * @author Eason(bo.chenb)
