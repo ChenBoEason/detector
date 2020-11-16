@@ -4,7 +4,7 @@
 - odps
 - Mysql
 - Oracle
-- Elasticsearch 待完善
+- Elasticsearch 完善中
 - Redis 待完善
 - Hbase 待完善
 
