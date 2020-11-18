@@ -4,7 +4,7 @@ import com.cbmiddleware.detector.exception.DetectorException;
 
 /**
  * @author Eason(bo.chenb)
- * @description sql生成器
+ * @description 查询sql生成器
  * @date 2020-03-19
  **/
 public interface SqlGenerator {
