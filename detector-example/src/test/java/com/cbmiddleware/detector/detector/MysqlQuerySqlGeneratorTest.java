@@ -2,7 +2,7 @@ package com.cbmiddleware.detector.detector;
 
 import com.alibaba.fastjson.JSON;
 import com.cbmiddleware.detector.exception.DetectorException;
-import com.cbmiddleware.detector.mysql.MysqlSqlGenerator;
+import com.cbmiddleware.detector.mysql.sql.MysqlQuerySqlGenerator;
 import com.cbmiddleware.detector.sql.constant.ColumnRelation;
 import com.cbmiddleware.detector.sql.constant.ConditionType;
 import com.cbmiddleware.detector.sql.constant.TableRelation;
@@ -17,7 +17,7 @@ import java.util.*;
  * @description
  * @date 2020-03-19
  **/
-public class MysqlSqlGeneratorTest {
+public class MysqlQuerySqlGeneratorTest {
 
 
     @Test
@@ -148,10 +148,10 @@ public class MysqlSqlGeneratorTest {
 
         generateSqlConf.setReturnColumns(returnColumns);
 
-        SqlGenerator sqlGenerator = new MysqlSqlGenerator();
+        QuerySqlGenerator querySqlGenerator = new MysqlQuerySqlGenerator();
 
         /*try {
-            sqlGenerator.join(extraCondition, generateSqlConf.getQueryTable(), 0, 50);
+            querySqlGenerator.join(extraCondition, generateSqlConf.getQueryTable(), 0, 50);
         } catch (DetectorException e) {
             e.printStackTrace();
         }*/
@@ -159,7 +159,7 @@ public class MysqlSqlGeneratorTest {
         String generateSql = null;
         try {
             System.out.println(JSON.toJSONString(generateSqlConf));
-            generateSql = sqlGenerator.generate(generateSqlConf);
+            generateSql = querySqlGenerator.generate(generateSqlConf);
         } catch (DetectorException e) {
             e.printStackTrace();
         }
@@ -175,7 +175,7 @@ public class MysqlSqlGeneratorTest {
     @Test
     public void twoTableJoin() {
 
-        SqlGenerator sqlGenerator = new MysqlSqlGenerator();
+        QuerySqlGenerator querySqlGenerator = new MysqlQuerySqlGenerator();
 
 
         String sql = "SELECT\n" +
@@ -238,7 +238,7 @@ public class MysqlSqlGeneratorTest {
 
         String generateSql = null;
         try {
-            generateSql = sqlGenerator.generate(generateSqlConf);
+            generateSql = querySqlGenerator.generate(generateSqlConf);
         } catch (DetectorException e) {
             e.printStackTrace();
         }

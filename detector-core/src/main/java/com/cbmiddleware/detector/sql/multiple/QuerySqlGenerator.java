@@ -7,7 +7,7 @@ import com.cbmiddleware.detector.exception.DetectorException;
  * @description 查询sql生成器
  * @date 2020-03-19
  **/
-public interface SqlGenerator {
+public interface QuerySqlGenerator {
 
     /**
      * sql生成

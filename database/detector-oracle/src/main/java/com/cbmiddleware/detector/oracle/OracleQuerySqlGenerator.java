@@ -1,8 +1,8 @@
-package com.cbmiddleware.detector;
+package com.cbmiddleware.detector.oracle;
 
 import com.cbmiddleware.detector.constant.DataBaseType;
 import com.cbmiddleware.detector.exception.DetectorException;
-import com.cbmiddleware.detector.sql.multiple.AbstractSqlGenerator;
+import com.cbmiddleware.detector.sql.multiple.AbstractQuerySqlGenerator;
 import com.cbmiddleware.detector.sql.multiple.GenerateSqlConfInfo;
 
 /**
@@ -10,7 +10,7 @@ import com.cbmiddleware.detector.sql.multiple.GenerateSqlConfInfo;
  * @description
  * @date 2020-03-19
  **/
-public class OdpsSqlGenerator extends AbstractSqlGenerator {
+public class OracleQuerySqlGenerator extends AbstractQuerySqlGenerator {
 
 
     @Override
@@ -20,6 +20,6 @@ public class OdpsSqlGenerator extends AbstractSqlGenerator {
 
     @Override
     public DataBaseType dataBaseType() {
-        return DataBaseType.odps;
+        return DataBaseType.oracle;
     }
 }

@@ -21,10 +21,10 @@ import java.util.List;
  * @description
  * @date 2020-03-19
  **/
-public abstract class AbstractSqlGenerator implements SqlGenerator {
+public abstract class AbstractQuerySqlGenerator implements QuerySqlGenerator {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSqlGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractQuerySqlGenerator.class);
 
     @Override
     public String generate(GenerateSqlConfInfo sqlConfInfo) throws DetectorException {

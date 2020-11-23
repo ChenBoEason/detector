@@ -1,20 +1,16 @@
-package com.cbmiddleware.detector.mysql;
+package com.cbmiddleware.detector;
 
 import com.cbmiddleware.detector.constant.DataBaseType;
 import com.cbmiddleware.detector.exception.DetectorException;
-import com.cbmiddleware.detector.sql.multiple.AbstractSqlGenerator;
+import com.cbmiddleware.detector.sql.multiple.AbstractQuerySqlGenerator;
 import com.cbmiddleware.detector.sql.multiple.GenerateSqlConfInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Eason(bo.chenb)
- * @description mysql生成器
+ * @description
  * @date 2020-03-19
  **/
-public class MysqlSqlGenerator extends AbstractSqlGenerator {
-
-    private static final Logger logger = LoggerFactory.getLogger(MysqlSqlGenerator.class);
+public class OdpsQuerySqlGenerator extends AbstractQuerySqlGenerator {
 
 
     @Override
@@ -22,9 +18,8 @@ public class MysqlSqlGenerator extends AbstractSqlGenerator {
         return super.generate(sqlConfInfo);
     }
 
-
     @Override
     public DataBaseType dataBaseType() {
-        return DataBaseType.mysql;
+        return DataBaseType.odps;
     }
 }
